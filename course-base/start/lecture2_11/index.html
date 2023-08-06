@@ -29,10 +29,30 @@
       <img src="../../assets/star-icon.png" />
     </div>
     <script type="module">
-      import {Vec} from './Vec.js';
+    
+    import {Vec} from './Vec.js';
+    
+    const centre = new Vec(150,150);
+    const radius = 100;
+    let theta = 0;
+    const star = document.getElementById('star');
 
-      console.clear();
-      
+    rotateStar();
+
+    function rotateStar()
+    {
+        requestAnimationFrame(rotateStar);
+
+        theta += 0.05; // increment value of pi by frame.
+
+        const x = Math.cos(theta) * radius + centre.x;
+        const y = Math.sin(theta) * radius + centre.y;
+
+        star.style.left = `${x}px`;
+        star.style.top= `${y}px`;
+    }
+
+    console.clear();    
     </script>
 </body>
 

@@ -12,3 +12,6 @@ isNaN(9) // true;
 
 // Math.random() return a pseudo random number between 0 and 1
 Math.random();
+
+// requestAnimationFrame(callback);
+
