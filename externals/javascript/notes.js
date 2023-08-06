@@ -13,3 +13,5 @@ isNaN(9) // true;
 // Math.random() return a pseudo random number between 0 and 1
 Math.random();
 
+// METHOD.bind(this);
+// by using bind and passing this into it we are referring to class it self. Otherwise it will refer as the base thing.
