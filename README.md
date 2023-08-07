@@ -8,6 +8,8 @@
 <h4>Dogukan Kaan Bozkurt</h4>
 
 <p> Server host : https://simplewebserver.org/</p>
+<p> ThreeJS Editor : https://threejs.org/editor/</p>
+
 </footer>
 </div>
 
