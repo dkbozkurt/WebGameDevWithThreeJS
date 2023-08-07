@@ -1,3 +1,21 @@
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 <div align="center">
 <h1>WebGameDevelopmentWithThreeJS</h1>
 <p> 3D Web Game Development With Three JS Scripts and Course Materials </p>
