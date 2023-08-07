@@ -26,7 +26,8 @@ class App{
 		
         //Replace Box with Circle, Cone, Cylinder, Dodecahedron, Icosahedron, Octahedron, Plane, Sphere, Tetrahedron, Torus or TorusKnot
         // const geometry = new THREE.CircleGeometry(1,32,0,Math.PI);
-        const geometry = this.createStarGeometry();
+        // const geometry = this.createStarGeometry();
+        const geometry = this.createPolygonGeometry(1,6);
 
         const material = new THREE.MeshStandardMaterial( { color: 0xFF0000 });
 
@@ -61,6 +62,29 @@ class App{
         const extrudeSettings = {
             steps : 1,
             depth:1,
+            bevelEnabled: false
+        }
+
+        return new THREE.ExtrudeGeometry(shape,extrudeSettings);
+    }
+
+    createPolygonGeometry(radius=1,sides = 6,geometryDepth = radius * 0.25){
+        const shape = new THREE.Shape();
+
+        const PI2 = Math.PI * 2;
+        const inc = PI2/sides;
+
+        shape.moveTo(radius,0);
+
+
+        for(let theta= inc; theta<PI2;theta += inc)
+        {
+            shape.lineTo(Math.cos(theta)*radius, Math.sin(theta)*radius);
+        }
+
+        const extrudeSettings = {
+            steps : 1,
+            depth: geometryDepth,
             bevelEnabled: false
         }
 
