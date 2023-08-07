@@ -1,23 +1,4 @@
 
-* {
-  box-sizing: border-box;
-}
-
-.column {
-  float: left;
-  width: 33.33%;
-  padding: 5px;
-}
-
-/* Clearfix (clear floats) */
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-
-<body>
 <div align="center">
 <h1>WebGameDevelopmentWithThreeJS</h1>
 <p> 3D Web Game Development With Three JS Scripts and Course Materials </p>
@@ -47,5 +28,3 @@
 <p> Earth and Moon </p>
 <img src="mySource/gifs/EarthAndMoon.gif" alt="earthAndMoon" width="100" height="100"/>
 </div>
-</body>
-</html>
