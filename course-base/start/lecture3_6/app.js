@@ -10,7 +10,7 @@ class App{
 		this.camera.position.set( 0, 0, 4 );
         
 		this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0xaaaaaa );
+        this.scene.background = new THREE.Color( 0x008000);
 
 		const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
 		this.scene.add(ambient);
@@ -27,9 +27,10 @@ class App{
         //Replace Box with Circle, Cone, Cylinder, Dodecahedron, Icosahedron, Octahedron, Plane, Sphere, Tetrahedron, Torus or TorusKnot
         // const geometry = new THREE.CircleGeometry(1,32,0,Math.PI);
         // const geometry = this.createStarGeometry();
-        const geometry = this.createPolygonGeometry(1,6);
+        // const geometry = this.createPolygonGeometry(1,6);
+        const geometry = new THREE.TorusKnotGeometry();
 
-        const material = new THREE.MeshStandardMaterial( { color: 0xFF0000 });
+        const material = new THREE.MeshStandardMaterial( { color:0xE0218A  });
 
         this.mesh = new THREE.Mesh( geometry, material );
         
