@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
 <style>
 * {
   box-sizing: border-box;
@@ -19,7 +16,7 @@
   display: table;
 }
 </style>
-</head>
+
 <body>
 <div align="center">
 <h1>WebGameDevelopmentWithThreeJS</h1>
