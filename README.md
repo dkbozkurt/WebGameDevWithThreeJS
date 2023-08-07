@@ -10,9 +10,12 @@
 <p> Server host : https://simplewebserver.org/</p>
 <p> ThreeJS Editor : https://threejs.org/editor/</p>
 
+<h2> PROJECTS</h2>
 <p> Rotating Red Cude </p>
-<img src="mySource/gifs/RedRotatingCube.gif" alt="rotatingRedCube"/>
-
+<img src="mySource/gifs/RedRotatingCube.gif" alt="rotatingRedCube" width="100" height="100"/>
+<br>
+<p> Earth and Moon </p>
+<img src="mySource/gifs/EarthAndMoon.gif" alt="earthAndMoon" width="100" height="100"/>
 </footer>
 </div>
 
