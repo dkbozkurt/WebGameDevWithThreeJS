@@ -16,4 +16,7 @@
 <br>
 <p> Earth and Moon </p>
 <img src="mySource/gifs/EarthAndMoon.gif" alt="earthAndMoon" width="250" height="250"/>
+<br>
+<p> Torus Material </p>
+<img src="mySource/gifs/TorusStandartMat.gif" alt="torusStdMat" width="250" height="250"/>
 </div>
