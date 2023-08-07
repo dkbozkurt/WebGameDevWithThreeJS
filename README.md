@@ -1,4 +1,4 @@
-<style>
+
 * {
   box-sizing: border-box;
 }
@@ -15,7 +15,7 @@
   clear: both;
   display: table;
 }
-</style>
+
 
 <body>
 <div align="center">
