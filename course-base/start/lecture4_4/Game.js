@@ -72,19 +72,99 @@ class Game{
     }
 
     loadEve(){
-    	
+    	const loader = new GLTFLoader().setPath(`${this.assetsPath}/factory/`);
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('../../libs/three128/draco/');
+        loader.setDRACOLoader(dracoLoader);
+
+        this.loadingBar.visible = true;
+        loader.load(
+            'eve.glb',
+            gltf => {
+                this.scene.add(gltf.scene);
+                this.eve = gltf.scene;
+                this.mixer = new THREE.AnimationMixer(gltf.scene);
+
+                this.animations = {};
+
+                gltf.animations.forEach(animation=> {
+                    this.animations[animation.name.toLowerCase()] = animation;
+                });
+
+                this.actionName ='';
+
+                this.newAnim();
+
+                this.loadingBar.visible = false;
+
+                this.renderer.setAnimationLoop(this.render.bind(this));
+
+                
+            },
+            xhr =>{
+                this.loadingBar.progress = xhr.loader/xhr.total;
+            },
+            err =>{
+                console.error(err);
+            }
+        )
 	}			
     
 	newAnim(){
-		
+		const keys = Object.keys(this.animations);
+
+        let index;
+
+        do{
+            index = Math.floor(Math.random()*keys.length);
+
+        }while(keys[index] == this.actionName);
+
+        this.action = keys[index];
+
+        setTimeout(this.newAnim.bind(this),3000);
+
 	}
 
 	set action(name){
-		
+		const clip = this.animations[name];
+
+        if(clip !== undefined)
+        {
+            const action = this.mixer.clipAction(clip);
+
+            action.reset();
+
+            if(name === 'shot')
+            {
+                action.setLoop(THREE.LoopOnce);
+                action.clampWhenFinished = true;
+            }
+
+            action.play();
+
+            if(this.curAction)
+            {
+                if(this.actionName == 'shot')
+                {
+                    this.curAction.enabled = false;
+                }
+                else{
+                    this.curAction.crossFadeTo(action, 0.5);
+                }
+            }
+
+            this.actionName = name;
+            this.curAction = action;
+        }
+        
 	}
 
 	render() {
 		const dt = this.clock.getDelta();
+
+        if(this.mixer !== undefined) this.mixer.update(dt);
 
         this.renderer.render( this.scene, this.camera );
     }
