@@ -30,11 +30,17 @@ class Plane{
 			'microplane.glb',
 			// called when the resource is loaded
 			gltf => {
-                
+                this.scene.add(gltf.scene);
+                this.plane = gltf.scene;
+                this.velocity = new Vector3(0,0,0.1);
+
+                this.propellor = this.plane.getObjectByName('propellor');
+
+                this.ready = true;
 			},
 			// called while loading is progressing
 			xhr => {
-				
+				this.loadingBar.update('plane',xhr.loaded,xhr.total);
 			},
 			// called when loading has errors
 			err => {
@@ -46,7 +52,10 @@ class Plane{
 	}	
 
     update(time){
-        
+        if(this.propellor !== undefined) this.propellor.rotateZ(1);
+
+        this.plane.rotation.set(0,0,Math.sin(time *3)*0.2, 'XYZ');
+        this.plane.position.y = Math.cos(time) * 1.5;
     }
 }
 
