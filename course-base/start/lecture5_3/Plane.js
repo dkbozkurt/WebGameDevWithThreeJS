@@ -51,6 +51,12 @@ class Plane{
 		);
 	}	
 
+    reset()
+    {
+        this.plane.position.set (0,0,0);
+        this.velocity.set(0,0,0.1);
+    }
+
     update(time){
         if (this.propeller !== undefined) this.propeller.rotateZ(1);
 
