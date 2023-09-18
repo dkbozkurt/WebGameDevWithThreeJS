@@ -59,36 +59,37 @@ void main() {
 }
 `
   constructor(parent, obstacles){
-    const geometry = new IcosahedronGeometry(20,4);
-
+    const geometry = new IcosahedronGeometry( 20, 4 );
+    
     this.obstacles = obstacles;
 
     this.uniforms = {
-        u_time: {value:0},
-        u_opacity: { value:0.6},
-        u_text : {value: new TextureLoader().load(`${game.assetsPath}plane/explosion.png`)}
+      u_time: { value: 0.0 },
+      u_mouse: { value:{ x:0.0, y:0.0 }},
+      u_opacity: { value: 0.6 },
+      u_resolution: { value:{ x:0, y:0 }},
+      u_tex: { value: new TextureLoader().load(`${game.assetsPath}plane/explosion.png`)}
     }
 
     ShaderChunk.noise = noise;
 
-    const material = new ShaderMaterial({
-        uniforms: this.uniforms,
-        vertexShader: Explosion.vshader,
-        fragmentShader: Explosion.fshader,
-        opacity: 0.6,
-        transparent: true
-    });
+    const material = new ShaderMaterial( {
+      uniforms: this.uniforms,
+      vertexShader: Explosion.vshader,
+      fragmentShader: Explosion.fshader,
+      transparent: true,
+      opacity: 0.6
+    } );
 
-    this.ball = new Mesh (geometry, material);
-
+    this.ball = new Mesh( geometry, material );
     const scale = 0.05;
-    this.ball.scale.set(scale,scale,scale);
-    parent.add(this.ball);
+    this.ball.scale.set(scale, scale, scale);
+    parent.add( this.ball );
 
     this.tweens = [];
-    this.tweens.push(new Tween(this.ball.scale, 'x', 0.2,1.5,this.onComplete.bind(this),'outQuad'));
+    this.tweens.push( new Tween(this.ball.scale, 'x', 0.2, 1.5, this.onComplete.bind(this), 'outQuad') );
 
-    this.active= true;
+    this.active = true;
   }
 
   onComplete(){
@@ -97,29 +98,28 @@ void main() {
     this.active = false;
     this.ball.geometry.dispose();
     this.ball.material.dispose();
-    if(this.obstacles) this.obstacles.removeExplosion(this);
+    if (this.obstacles) this.obstacles.removeExplosion(this);
   }
 
-  update(dt) {
-    if(!this.active) return;
+  update(time) {
+    if (!this.active) return;
 
-    this.uniforms.u_time.value += dt;
+    this.uniforms.u_time.value += time;
     this.uniforms.u_opacity.value = this.ball.material.opacity;
 
-    if(this.tweens.length <2)
-    {
-        if(this.uniforms.u_time.value>1)
-        {
-            this.tweens.push(new Tween(this.ball.material,'opacity',0,0.5));
-        }
+    if (this.tweens.length<2){
+      const elapsedTime = this.uniforms.u_time.value - 1;
+
+      if (elapsedTime > 0){
+        this.tweens.push( new Tween(this.ball.material, 'opacity', 0, 0.5) );
+      }
     }
 
-    this.tweens.forEach(tween =>
-        {
-            tween.update(dt);
-        })
+    this.tweens.forEach( tween => {
+      tween.update(time);
+    });
 
-        this.ball.scale.y = this.ball.scale.z = this.ball.scale.x;
+    this.ball.scale.y = this.ball.scale.z = this.ball.scale.x;
   }
 
 }
