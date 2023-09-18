@@ -77,46 +77,47 @@ class Obstacles{
 
 	initialize(){
         this.obstacles = [];
-
+        
         const obstacle = new Group();
-
+        
         obstacle.add(this.star);
-
-        this.bomb.rotation.x = -Math.PI * 0.5; // 90 degrees
+        
+        this.bomb.rotation.x = -Math.PI*0.5;
         this.bomb.position.y = 7.5;
         obstacle.add(this.bomb);
 
-        let rotate = true;
+        let rotate=true;
 
-        for(let y = 7.5; y>-8; y -= -2.5)
-        {
+        for(let y=7.5; y>-8; y-=2.5){
             rotate = !rotate;
-            if(y==0) continue;
+            if (y==0) continue;
             const bomb = this.bomb.clone();
-            bomb.rotation.x = (rotate) ? -Math.PI * 0.5 : 0 ;
+            bomb.rotation.x = (rotate) ? -Math.PI*0.5 : 0;
             bomb.position.y = y;
             obstacle.add(bomb);
+        
         }
-
         this.obstacles.push(obstacle);
+
         this.scene.add(obstacle);
 
-        for(let i=0;i<3; i++)
-        {
+        for(let i=0; i<3; i++){
+            
             const obstacle1 = obstacle.clone();
-
+            
             this.scene.add(obstacle1);
             this.obstacles.push(obstacle1);
+
         }
 
         this.reset();
 
-        this.ready = true;
+		this.ready = true;
     }
 
     reset(){
-        this.obstacleSpawn = { pos : 20,offset : 5};
-        this.obstacles.forEach( obstacle => this.respawnObstacle(obstacle));
+        this.obstacleSpawn = { pos: 20, offset: 5 };
+        this.obstacles.forEach( obstacle => this.respawnObstacle(obstacle) );
     }
 
     respawnObstacle( obstacle ){

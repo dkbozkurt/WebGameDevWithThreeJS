@@ -58,11 +58,11 @@ class Game{
 	}
 	
     startGame(){
-        const gameOver = document.getElementById('gameover');
+        const gameover = document.getElementById('gameover');
         const instructions = document.getElementById('instructions');
         const btn = document.getElementById('playBtn');
 
-        gameOver.style.display = 'none';
+        gameover.style.display = 'none';
         instructions.style.display = 'none';
         btn.style.display = 'none';
 
@@ -71,7 +71,7 @@ class Game{
 
         let elm = document.getElementById('score');
         elm.innerHTML = this.score;
-
+        
         elm = document.getElementById('lives');
         elm.innerHTML = this.lives;
 
@@ -172,11 +172,13 @@ class Game{
     }
 
     decLives(){
-        this.lives --;  
-        const elm = document.getElementById('lives');   
+        this.lives--;
+
+        const elm = document.getElementById('lives');
+
         elm.innerHTML = this.lives;
 
-        if(this.lives ==0) this.gameOver();
+        if (this.lives==0) this.gameOver();
     }
 
     updateCamera(){
@@ -199,9 +201,11 @@ class Game{
 
         const time = this.clock.getElapsedTime();
 
-        if (this.active) this.obstacles.update(this.plane.position);
-
         this.plane.update(time);
+
+        if (this.active){
+            this.obstacles.update(this.plane.position);
+        }
     
         this.updateCamera();
     

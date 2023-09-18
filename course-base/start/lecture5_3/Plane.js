@@ -51,9 +51,8 @@ class Plane{
 		);
 	}	
 
-    reset()
-    {
-        this.plane.position.set (0,0,0);
+    reset(){
+        this.plane.position.set(0, 0, 0);
         this.velocity.set(0,0,0.1);
     }
 
