@@ -28,7 +28,26 @@ class Game{
 		this.scene.add(ambient);
 
         //Add light with shadow
-			
+        const light = new THREE.DirectionalLight();
+        light.position.set(4,20,20);
+        light.castShadow = true;
+
+        light.shadow.mapSize.width = 1024;
+        light.shadow.mapSize.height= 512;
+        light.shadow.camera.near = 0.5;
+        light.shadow.camera.far = 60;
+
+        const d = 30;
+        light.shadow.camera.left = -d;
+        light.shadow.camera.bottom = -d * 0.25;
+        light.shadow.camera.right =  light.shadow.camera.top = d;
+
+        this.scene.add(light);
+        this.light = light;
+
+        const helper = new THREE.CameraHelper(light.shadow.camera);
+        this.scene.add(helper);
+
 		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true } );
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -84,7 +103,64 @@ class Game{
 			'factory1.glb',
 			// called when the resource is loaded
 			gltf => {
+                this.scene.add(gltf.scene);
+                this.factory = gltf.scene;
 
+                this.fans = [];
+
+                const mergeObjects = {elements2:[],elements5:[],terrain:[]}
+
+                gltf.scene.traverse ( child => {
+                    if(child.isMesh)
+                    {
+                        if(child.name.includes('fan')){
+                            this.fans.push(child);
+                        }
+                        else if(child.material.name.includes('elements2'))
+                        {
+                            mergeObjects.elements2.push(child);
+                            child.castShadow = true;
+                        }
+                        else if (child.material.name.includes('elements5'))
+                        {
+                            mergeObjects.elements5.push(child);
+                        }
+                        else if (child.material.name.includes('terrain'))
+                        {
+                            mergeObjects.terrain.push(child);
+                        }else if (child.material.name.includes(`sand`))
+                        {
+                            child.receiveShadow = true;
+                        }
+                        else if (child.material.name.includes('elements1'))
+                        {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                        else if (child.parent.name.includes(`main`))
+                        {
+                            child.castShadow = true;
+                        }
+                    }
+                });
+
+                for(let prop in mergeObjects)
+                {
+                    const array = mergeObjects[prop];
+                    let material;
+                    array.forEach ( object => {
+                        if(material == undefined)
+                        {
+                            material = object.material;
+                        }
+                        else{
+                            object.material = material;
+                        }
+                    })
+                }
+
+                this.loadingBar.visible = false;
+                this.renderer.setAnimationLoop(this.render.bind(this));
 			},
 			// called while loading is progressing
 			xhr => {
@@ -104,6 +180,13 @@ class Game{
 	render() {
 		const dt = this.clock.getDelta();
 
+        if(this.fans !== undefined)
+        {
+            this.fans.forEach(fan =>
+                {
+                    fan.rotateY(dt);
+                })
+        }
         this.renderer.render( this.scene, this.camera );
 
     }
