@@ -15,11 +15,24 @@ class UI{
     }
 
     playBtnPressed(){
-
+        const playBtn = document.getElementById('playBtn');
+        playBtn.style.display = 'none';
+        const img = playBtn.getElementsByTagName('img')[0];
+        img.src = '../../assets/factory/playagain.png';
+        this.game.startGame();
     }
 
     showGameover(){
+        const gameover = document.getElementById('gameover');
+        gameover.style.display = 'block';
 
+        setTimeout(hideGameover,2000);
+
+        function hideGameover(){
+            gameover.style.display = 'none';
+            const playBtn = document.getElementById('playBtn');
+            playBtn.style.display = 'block';
+        }
     }
     
     set ammo(value){
