@@ -52,6 +52,11 @@ class NPC{
 		player.quaternion.copy(quaternion);
 	}
 
+    get randomWaypoint(){
+		const index = Math.floor(Math.random()*this.waypoints.length);
+		return this.waypoints[index];
+	}
+
 	newPath(pt){
         const player = this.object;
         
@@ -183,8 +188,13 @@ class NPC{
                 // Remove node from the path we calculated
                 this.calculatedPath.shift();
                 if (this.calculatedPath.length==0){
-                    player.position.copy( targetPosition );
-                    this.action = 'idle';
+                    if(this.waypoints!== undefined){
+                        this.newPath(this.randomWaypoint);
+                    }
+                    else{
+                        player.position.copy( targetPosition );
+                        this.action = 'idle';
+                    }
                 }else{
                     this.setTargetDirection( this.calculatedPath[0].clone() );
                 }
