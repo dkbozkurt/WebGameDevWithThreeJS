@@ -40,7 +40,7 @@ class Controller{
 
         this.checkForGamepad();
 
-        if('ontouchstart' in document.documentElement){
+        if(true){// 'ontouchstart' in document.documentElement){
             const options1 = {
                 left: true,
                 app: this,
