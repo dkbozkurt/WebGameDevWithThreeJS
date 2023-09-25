@@ -7,7 +7,6 @@ class NPCHandler{
     constructor( game ){
         this.game = game;
 		this.loadingBar = this.game.loadingBar;
-        this.waypoints = game.waypoints;
         this.load();
 		this.initMouseHandler();
 	}
@@ -74,40 +73,40 @@ class NPCHandler{
     
 	initNPCs(gltf = this.gltf){
 		const gltfs = [gltf];
+				
+		this.npcs = [];
+		
+		gltfs.forEach(gltf => {
+			const object = gltf.scene;
 
-        this.npc = [];
+			object.traverse(function(child){
+				if (child.isMesh){
+					child.castShadow = true;
+				}
+			});
 
-        gltfs.forEach(gltf => {
-            const object = gltf.scene;
+			const options = {
+				object: object,
+				speed: 3,
+				animations: gltf.animations,
+				app: this.game,
+				showPath: true,
+				zone: 'factory',
+				name: 'swat-guy',
+			};
 
-            object.traverse ( child => {
-                if(child.isMesh)
-                {
-                    child.castShadow = true;
-                }
-            });
+			const npc = new NPC(options);
 
-            const options = {
-                object,
-                speed: 0.8,
-                animations: gltf.animations,
-                app: this.game,
-                shoaPath: true,
-                zone: 'factory',
-                name:'swat-guy'
-            }
+			npc.object.position.set(-7.607, 0.017, -7.713);
+			npc.action = 'idle';
+			
+			this.npcs.push(npc);
+			
+		});
 
-            const npc = new NPC(options);
-            npc.action = "idle";
+		this.loadingBar.visible = !this.loadingBar.loaded;
 
-            npc.object.position.set(-7.607,0.017,-7.713);
-
-            this.npcs.push(npc);
-        });
-
-        this.loadingBar.visible = !this.loadingBar.loaded;
-
-        this.game.startRendering();
+		this.game.startRendering();
 	}
 
     update(dt){
