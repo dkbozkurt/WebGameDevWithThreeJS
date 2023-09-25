@@ -64,7 +64,48 @@ class Game{
 	}
 
 	seeUser(pos, seethrough=false){
-		
+        if(this.seethrough)
+        {
+            this.seethrough.forEach(child =>{
+                child.material.transparent = false;
+                child.material.opacity =1;
+            });
+            delete this.seethrough;
+        }
+		this.tmpVec.copy(this.user.position).sub(pos).normalize();
+        this.raycaster.set(pos,this.tmpVec);
+
+        const intersects = this.raycaster.intersectObjects(this.factory.children, true);
+
+        let userVisible = true;
+
+        if(intersects.length>0)
+        {
+            const dist = this.tmpVec.copy(this.user.position).distanceTo(pos);
+            
+
+            if(seethrough)
+            {
+                this.seethrough = [];
+                intersects.some(intersect => {
+                    if(intersect.distance<dist)
+                    {
+                        this.seethrough.push(intersect.object);
+                        intersect.object.material.transparent = true;
+                        intersect.object.material.opacity = 0.3;
+                    }
+                    else{
+                        return true;
+                    }
+                });
+            }
+            else{
+                userVisible = (intersects[0].distance>dist);
+                
+            }
+        }
+
+        return userVisible;
 	}
 
 	initPathfinding(navmesh){
