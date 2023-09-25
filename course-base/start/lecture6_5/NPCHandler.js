@@ -73,7 +73,41 @@ class NPCHandler{
 	}
     
 	initNPCs(gltf = this.gltf){
-		
+		const gltfs = [gltf];
+
+        this.npc = [];
+
+        gltfs.forEach(gltf => {
+            const object = gltf.scene;
+
+            object.traverse ( child => {
+                if(child.isMesh)
+                {
+                    child.castShadow = true;
+                }
+            });
+
+            const options = {
+                object,
+                speed: 0.8,
+                animations: gltf.animations,
+                app: this.game,
+                shoaPath: true,
+                zone: 'factory',
+                name:'swat-guy'
+            }
+
+            const npc = new NPC(options);
+            npc.action = "idle";
+
+            npc.object.position.set(-7.607,0.017,-7.713);
+
+            this.npcs.push(npc);
+        });
+
+        this.loadingBar.visible = !this.loadingBar.loaded;
+
+        this.game.startRendering();
 	}
 
     update(dt){
