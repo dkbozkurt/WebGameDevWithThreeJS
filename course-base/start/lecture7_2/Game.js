@@ -70,7 +70,16 @@ import { Table } from './Table.js';
   }
 
   setCollisionBehaviour(world) {
-    
+    world.defaultContactMaterial.friction = 0.2;
+    world.defaultContactMaterial.restitution = 0.8;
+
+    const ball_floor = new CANNON.ContactMaterial(
+        Ball.MATERIAL,
+        Table.FLOOR_MATERIAL,
+        {friction: 0.7,restitution:0.1}
+    );
+
+    world.addContactMaterial(ball_floor);
   }
       // Spheres
   initScene(){
@@ -80,7 +89,27 @@ import { Table } from './Table.js';
   }
 
   createBalls(){
-    
+    this.balls = [new Ball(this, -Table.Length/4,0)];
+
+    const rowInc = 1.74*Ball.RADIUS;
+    let row= { x:Table.LENGTH/4+rowInc,count:6,total:6};
+    const ids = [4,3,14,2,15,13,7,12,5,6,8,9,10,11,1];
+
+    for(let i=0;i<15;i++)
+    {
+        if(row.total == row.count)
+        {
+            row.total =0;
+            row.count--;
+            row.x -= rowInc;
+            row.z = (row.count-1) * (Ball.RADIUS + 0.002);
+        }
+        this.balls.push(new Ball(this,row.x,row.z,ids[i]));
+        row.z-=2 * (Ball.RADIUS + 0.002);
+        row.total++;
+    }
+
+    this.cueball = this.balls[0];
   }
 
   resize(){
@@ -90,6 +119,8 @@ import { Table } from './Table.js';
   }
 
   render( ) {  
+    this.controls.target.copy(this.cueball.mesh.position);
+    this.controls.update();
     this.world.step(this.world.fixedTimeStep);
     this.helper.update();
     this.renderer.render( this.scene, this.camera );
