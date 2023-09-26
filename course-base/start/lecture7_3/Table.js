@@ -72,12 +72,12 @@ class LongWall{
   
         //adjust the x-coordinates to change the angle of the triangle shape
         const vertices1 = [
-            0,     height, -2 * thickness, // vertex 0
+            -0.028,     height, -2 * thickness, // vertex 0
             0,     height,  0,             // vertex 1
-            -0.028,  height, -2 * thickness, // vertex 2
-            0,    -height, -2 * thickness, // vertex 3
+            0,  height, -2 * thickness, // vertex 2
+            -0.028,    -height, -2 * thickness, // vertex 3
             0,    -height,  0,             // vertex 4
-            -0.028, -height, -2 * thickness  // vertex 5
+            0, -height, -2 * thickness  // vertex 5
         ];
   
         //corner of table
@@ -92,7 +92,7 @@ class LongWall{
   
         const indices = [
             0, 1, 2,
-            3, 4, 5,
+            5, 4, 3,
             5, 0, 2,
             5, 3, 0,
             3, 4, 1,
@@ -127,12 +127,12 @@ class ShortWall{
   
         // How to make a mesh with a single triangle
         const vertices1 = [
-            0,  height, -2 * thickness, // vertex 0
+            -0.125,  height, -2 * thickness, // vertex 0
             0,  height,  0,             // vertex 1
-            -0.125,  height, -2*thickness,   // vertex 2
-            0, -height, -2*thickness,   // vertex 3
+            0,  height, -2*thickness,   // vertex 2
+            -0.125, -height, -2*thickness,   // vertex 3
             0, -height,  0,             // vertex 4
-            -0.125, -height, -2*thickness    // vertex 5
+            0, -height, -2*thickness    // vertex 5
         ];
   
         // Corner of table
@@ -227,15 +227,82 @@ class Table{
     }
 
     createFelt(){
-        
+        const narrowStripWidth = 0.02;
+        const narrowStripLength = Table.WIDTH / 2 - 0.05;
+        const floorThickness = 0.01;
+        const mainAreaX = Table.LENGTH / 2 - 2 * narrowStripWidth;
+      
+        const floorBox = new CANNON.Box(new CANNON.Vec3(mainAreaX, floorThickness, Table.WIDTH / 2));
+        const floorBoxSmall = new CANNON.Box(new CANNON.Vec3(narrowStripWidth, floorThickness, narrowStripLength));
+      
+        const body = new CANNON.Body({
+          mass: 0, // mass == 0 makes the body static
+          material: Table.floorContactMaterial
+        });
+
+        body.addShape(floorBox,      new CANNON.Vec3(0, -floorThickness, 0));
+        body.addShape(floorBoxSmall, new CANNON.Vec3(-mainAreaX - narrowStripWidth, -floorThickness, 0));
+        body.addShape(floorBoxSmall, new CANNON.Vec3( mainAreaX + narrowStripWidth, -floorThickness, 0));
+      
+        if (debug) {
+          addCannonVisual(body, 0x00FF00, false, true);
+        }
+
+        world.addBody(body);
+
+        return body;
     }
 
     createHoles(){
-        
+        const corner = { x: Table.LENGTH/2 + 0.015, z: Table.WIDTH/2 + 0.015, PIby4: Math.PI/4  }
+        const middleZ = Table.WIDTH/2 + 0.048;
+
+        const holes = [
+            //corners of -z table side
+            new Hole(corner.x, 0, -corner.z,  corner.PIby4),
+            new Hole(-corner.x, 0, -corner.z, -corner.PIby4),
+            //middle holes
+            new Hole(0, 0, -middleZ, 0),
+            new Hole(0, 0,  middleZ, Math.PI),
+            //corners of +z table side
+            new Hole( corner.x, 0, corner.z,  3 * corner.PIby4 ),
+            new Hole(-corner.x, 0, corner.z, -3 * corner.PIby4 )
+        ];
+
+        return holes;
     }
 
     createWalls(){
-        
+        const pos = { x:Table.LENGTH/4 - 0.008, y:0.02, z:Table.WIDTH/2}
+        //walls of -z
+        const wall1 = new LongWall( pos.x, pos.y, -pos.z, 0.61);
+        const wall2 = new LongWall(-pos.x, pos.y, -pos.z, 0.61);
+        wall2.body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), Math.PI);
+
+        //walls of +z
+        const wall3 = new LongWall( pos.x, pos.y, pos.z, 0.61);
+        const wall4 = new LongWall(-pos.x, pos.y, pos.z, 0.61);
+        wall3.body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0),  Math.PI);
+        wall4.body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI);
+
+        //wall of +x
+        pos.x = Table.LENGTH/2;
+        const wall5 = new ShortWall(pos.x, pos.y, 0, 0.605);
+
+        //wall of -x
+        const wall6 = new ShortWall(-pos.x, pos.y, 0, 0.605);
+        wall6.body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -1.5 * Math.PI);
+
+        const walls = [wall1, wall2, wall3, wall4, wall5, wall6];
+       
+        walls.forEach( wall => {
+            world.addBody(wall.body);
+            if (debug) {
+                addCannonVisual(wall.body, 0x00DD00, false, false);
+            }
+        });
+
+        return walls;
     }
 }
 
