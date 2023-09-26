@@ -16,6 +16,19 @@ class Game{
         this.initWorld();
         this.initScene();
 
+        this.strengthBar = new StrengthBar();
+
+        const strengthControl = document.getElementById('strengthControl');
+
+        if ('ontouchstart' in document.documentElement){
+            strengthControl.addEventListener( 'touchstart', this.mousedown.bind(this));
+            strengthControl.addEventListener( 'touchend', this.mouseup.bind(this));
+        }else{
+            strengthControl.addEventListener( 'mousedown', this.mousedown.bind(this));
+            strengthControl.addEventListener( 'mouseup', this.mouseup.bind(this));
+            document.addEventListener( 'keydown', this.keydown.bind(this));
+            document.addEventListener( 'keyup', this.keyup.bind(this));
+        }
         if (this.helper) this.helper.wireframe = true;
     }
 
@@ -220,7 +233,7 @@ class Game{
     }
 
     createBalls(){
-        this.balls = [ new Ball(this, -Table.LENGTH/4, 0) ];
+        this.balls = [ new WhiteBall(this, -Table.LENGTH/4, 0) ];
 
         const rowInc = 1.74 * Ball.RADIUS;
         let row = { x:Table.LENGTH/4+rowInc, count:6, total:6 };

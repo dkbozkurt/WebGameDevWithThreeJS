@@ -20,7 +20,24 @@ class WhiteBall extends Ball{
     }
 
     createGuideLine() {
-        
+        const points = [];
+        points.push(new THREE.Vector3(0,0,0));
+        points.push(new THREE.Vector3(0,0,-1));
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineDashedMaterial({
+            color : 0xFFFFFF,
+            dashSize:0.05,
+            gapSize: 0.03
+        });
+        const line = new THREE.Line(geometry,material);
+
+        line.scale.z = 3;
+        line.visible = false;
+
+        line.computeLineDistances();
+
+        return line;
     }
 
     createIntersectionDot() {
@@ -44,6 +61,41 @@ class WhiteBall extends Ball{
     }
         
     updateGuideLine() {
+        if(this.balls === undefined){
+            this.balls = this.game.balls.map(ball => ball.mesh);
+            this.balls.shift();
+        }
+
+        const angle = this.game.controls.getAzimuthalAngle();
+
+        this.guideLine.position.copy(this.mesh.position);
+        this.guideLine.rotation.y = angle;
+
+        this.guideLine.visible = true;
+
+        this.guideLine.getWorldDirection(this.forward);
+        this.forward.negate();
+
+        this.raycaster.set(this.mesh.position,this.forward);
+
+        let intersects = this.raycaster.intersectObjects(this.balls);
+
+        if(intersects.length>0)
+        {
+            this.guideLine.scale.z = intersects[0].distance;
+            this.dot.position.copy(intersects[0].point);
+            this.dot.visible = true;
+        }
+        else{
+            intersects = this.raycaster.intersectObjects(this.game.edges.children);
+
+            if(intersects>0)
+            {
+                this.guideLine.scale.z= intersects[0].distance;
+            }
+
+            this.dot.visible = false;
+        }
         
     }
 
