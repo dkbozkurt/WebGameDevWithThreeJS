@@ -10,7 +10,7 @@ import { Table } from './Table.js';
 
 class Game{
 	constructor(){
-        this.debug = true;
+        this.debug = false; // this.debug = true;
         this.initThree();
         this.initWorld();
         this.initScene();
