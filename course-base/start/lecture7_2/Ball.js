@@ -30,11 +30,36 @@ class Ball{
     }
 
     hit(strength=0.6) {
-    
+        this.rigidBody.wakeUp();
+
+        const theta = this.game.controls.getAzimuthalAngle();
+        this.tmpQuat.setFromAxisAngle(this.up,theta);
+
+        const forward = this.forward.clone().applyQuaternion(this.tmpQuat);
+
+        const force = new CANNON.Vec3();
+        force.copy(forward);
+        force.scale(strength,force);
+
+        this.rigidBody.applyImpulse(force,new CANNON.Vec3());
+
     }
     
     createBody(x,y,z) {
-      
+      const body =  new CANNON.Body({
+        mass: Ball.MASS,
+        position: new CANNON.Vec3(x,y,z),
+        shape: new CANNON.Sphere(Ball.RADIUS),
+        material: Ball.MATERIAL
+      });
+
+      body.linearDamping=body.angularDamping = 0.5;
+      body.allowSleep = true;
+
+      body.sleepSpeedLimit = 2;
+      body.sleepTimeLimit = 0.1;
+
+      return body;
     }
 }
 

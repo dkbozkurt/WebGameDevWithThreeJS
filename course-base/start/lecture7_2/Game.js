@@ -89,7 +89,7 @@ import { Table } from './Table.js';
   }
 
   createBalls(){
-    this.balls = [new Ball(this, -Table.Length/4,0)];
+    this.balls = [new Ball(this, -Table.LENGTH/4,0)];
 
     const rowInc = 1.74*Ball.RADIUS;
     let row= { x:Table.LENGTH/4+rowInc,count:6,total:6};
